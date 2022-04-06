@@ -37,14 +37,14 @@ class Startup
         paycheck = @salaries[employee.title]
             if @funding >= paycheck
                 employee.pay(paycheck)
-                funding -= paycheck
+                @funding -= paycheck
             else 
                 raise "Need to acquire new funding"
             end
     end
 
     def payday
-        @emmployees.each do |employee|
+        @employees.each do |employee|
             pay_employee(employee)
         end
     end
@@ -58,19 +58,21 @@ class Startup
     end
 
     def close
-        @empployees = []
+        @employees = []
         @funding = 0
     end
 
-    def acquire(startup_2)
-        @funding = self.funding + startup_2.funding
-        @salaries = self.salaries + startup_2.salaries
-        @employees = self.empployees + startup_2.employees
-        startup_2.close
+    def acquire(startup)
+        @funding += startup.funding
+        
+        startup.salaries.each do |title, paycheck|
+            if !@salaries.has_key?(title)
+                @salaries[title] = paycheck
+            end
+        end
+
+        @employees += startup.employees
+        startup.close()
     end
-
-
-
-
 
 end
